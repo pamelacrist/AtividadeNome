@@ -1,0 +1,1 @@
+Precisa adicionar o banco Usuario e a tabela usuario usando o arquivo SQL, que esta onde foi instalado
