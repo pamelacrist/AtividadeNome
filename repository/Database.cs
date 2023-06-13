@@ -1,7 +1,6 @@
 namespace pastanova.Database
 {
     using Microsoft.EntityFrameworkCore;
-    using pastanova.Model;
 
     public class Contexto : DbContext
     {
@@ -11,7 +10,8 @@ namespace pastanova.Database
             => optionsBuilder.UseMySql(_connectionString, ServerVersion.AutoDetect(_connectionString));
 
 
-        public DbSet<Usuario> Usuario { get; set; }
+        public DbSet<Model.Automovel>? Automoveis { get; set; }
+
 
     }
 }

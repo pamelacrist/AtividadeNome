@@ -11,11 +11,11 @@ namespace pastanova.View
         Button botaoCriar;
         Button botaoEditar;
         Button botaoRemover;
-        ListView listaUsuarios;
-        List<Model.Usuario> Usuarios = new List<Model.Usuario>();
+        ListView listaVeiculos;
+        List<Model.Automovel> Veiculos = new List<Model.Automovel>();
         public ListaUsuario()
         {
-            this.Text = "Usuario";
+            this.Text = "Veiculo";
             this.Width = 600;
             this.botaoCriar = new Button();
             botaoCriar.Text = "Criar";
@@ -34,52 +34,85 @@ namespace pastanova.View
             botaoRemover.Location = new Point(botaoEditar.Right + 10, 10);
             botaoRemover.Click += new EventHandler(this.botaoRemover_Click);
             this.Controls.Add(botaoRemover);
-            this.listaUsuarios = new ListView();
-            listaUsuarios.Location = new Point(10, botaoRemover.Bottom + 10);
-            listaUsuarios.Width = 300;
-            listaUsuarios.Height = 300;
-            listaUsuarios.View = View.Details;
-            listaUsuarios.FullRowSelect = true;
-            listaUsuarios.Columns.Add("Nome", 150);
-            listaUsuarios.FullRowSelect = true;
-            this.Controls.Add(listaUsuarios);
-            Controller.Usuario.listar(listaUsuarios);
+            this.listaVeiculos = new ListView();
+            listaVeiculos.Location = new Point(10, botaoRemover.Bottom + 10);
+            listaVeiculos.Width = 600;
+            listaVeiculos.Height = 300;
+            listaVeiculos.View = View.Details;
+            listaVeiculos.FullRowSelect = true;
+            listaVeiculos.Columns.Add("ID", 100);
+            listaVeiculos.Columns.Add("Marca", 100);
+            listaVeiculos.Columns.Add("Modelo", 100);
+            listaVeiculos.Columns.Add("Preco", 100);
+            listaVeiculos.Columns.Add("Preco Venda", 100);
+            listaVeiculos.Columns.Add("Tipo", 100);
+            this.Controls.Add(listaVeiculos);
+            Controller.Automovel.listar(listaVeiculos);
         }
         private void botaoCriar_Click(object sender, EventArgs e)
         {
-            FormularioUsuario formulario = new pastanova.View.FormularioUsuario();
-            // Show testDialog as a modal dialog and determine if DialogResult = OK.
+            FormularioAutomovel formulario = new pastanova.View.FormularioAutomovel();
+            // Show formulario as a modal dialog and determine if DialogResult = OK.
             if (formulario.ShowDialog(this) == DialogResult.OK)
             {
-                Controller.Usuario.criar(listaUsuarios, Usuarios, formulario);
+              Controller.Automovel.criar(listaVeiculos,Veiculos,formulario);
             }
         }
+
         private void botaoEditar_Click(object sender, EventArgs e)
         {
-            if (listaUsuarios.SelectedItems.Count > 0)
+            if (listaVeiculos.SelectedItems.Count > 0)
             {
-                ListViewItem itemSelecionado = listaUsuarios.SelectedItems[0];
-
-                if (itemSelecionado != null && itemSelecionado.Tag != null)
+                ListViewItem itemSelecionado = listaVeiculos.SelectedItems[0];
+               
+                if (itemSelecionado != null)
                 {
-                    Model.Usuario UsuarioSelecionado = (Model.Usuario)itemSelecionado.Tag;
-                    FormularioUsuario formulario = new FormularioUsuario(UsuarioSelecionado.Nome);
-                    // Show testDialog as a modal dialog and determine if DialogResult = OK.
+                    // Obter o veículo selecionado com base no índice do item selecionado na lista
+                    Model.Automovel automovel = (Model.Automovel)itemSelecionado.Tag;
+                    FormularioAutomovel formulario = new FormularioAutomovel();
+                    formulario.tipo.Text = automovel.Tipo;
+                    formulario.marca.Text = automovel.Marca;
+                    formulario.modelo.Text = automovel.Modelo;
+                    formulario.preco.Text = automovel.Preco.ToString();
+                    // Show formulario as a modal dialog and determine if DialogResult = OK.
                     if (formulario.ShowDialog(this) == DialogResult.OK)
                     {
-                        Controller.Usuario.editar(listaUsuarios, Usuarios, formulario,UsuarioSelecionado);
+                        automovel.Marca = formulario.marca.Text;
+                        automovel.Modelo = formulario.modelo.Text;
+                        automovel.Tipo = formulario.tipo.Text;
+                        automovel.Atualizar();
+                        // Atualizar as informações do veículo na lista exibida no formulário
+                        itemSelecionado.SubItems[1].Text = automovel.Marca;
+                        itemSelecionado.SubItems[2].Text = automovel.Modelo;
+                        itemSelecionado.SubItems[3].Text = automovel.Tipo;
                     }
                 }
             }
         }
+      
         private void botaoRemover_Click(object sender, EventArgs e)
         {
-            DialogResult result = MessageBox.Show("Certeza que quer remover ?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-            // Check which button was clicked
-            if (result == DialogResult.Yes)
+            if (listaVeiculos.SelectedItems.Count > 0)
             {
-                Controller.Usuario.remover(listaUsuarios);
+                ListViewItem itemSelecionado = listaVeiculos.SelectedItems[0];
+
+                if (itemSelecionado != null)
+                {
+                    // Obter o veículo selecionado com base no índice do item selecionado na lista
+                    int indiceVeiculo = itemSelecionado.Index;
+                    Model.Automovel automovel = (Model.Automovel)itemSelecionado.Tag;
+
+                    DialogResult result = MessageBox.Show("Tem certeza que deseja remover o veículo?", "Confirmação", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                    if (result == DialogResult.Yes)
+                    {
+                        // Remover o veículo do banco de dados
+                        automovel.Remover();
+
+                        // Remover o veículo da lista exibida no formulário
+                        Controller.Automovel.listar(listaVeiculos);
+                    }
+                }
             }
         }
 

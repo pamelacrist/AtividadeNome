@@ -13,7 +13,7 @@ namespace pastanova.View
         {
             Text = "Titulo da Janela";
             this.botaoUsuario = new Button();
-            botaoUsuario.Text = "Usuario";
+            botaoUsuario.Text = "Veiculos";
             botaoUsuario.Width = 100;
             botaoUsuario.Location = new Point(Width / 2 - botaoUsuario.Width / 2, Height / 2 - botaoUsuario.Height / 2 - 90);
             botaoUsuario.Click += new EventHandler(botaoUsuario_Click);
@@ -21,7 +21,7 @@ namespace pastanova.View
             this.botaoSair = new Button();
             botaoSair.Text = "Sair";
             botaoSair.Width = 100;
-            botaoSair.Location = new Point(Width / 2 - botaoSair.Width / 2, Height / 2 - botaoSair.Height / 2);
+            botaoSair.Location = new Point(Width / 2 - botaoSair.Width / 2, Height / 2 - botaoSair.Height /  2 - 50);
             botaoSair.Click += new EventHandler(botaoSair_Click);
             Controls.Add(botaoSair);
         }
